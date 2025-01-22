@@ -276,7 +276,7 @@ to get dummy text<br/>
 
 
 Please 
-<a href="https://github.com/ahoang25/kanbas-react-web-app" id="wd-github">click here </a>
+<a href="https://github.com/ahoang25/kambaz-react-web-app.git" id="wd-github">click here </a>
 to go to my GitHub Repository.<br/>
 
 
