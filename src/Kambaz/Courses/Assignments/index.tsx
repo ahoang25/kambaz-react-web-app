@@ -1,58 +1,94 @@
+import { BsThreeDotsVertical, BsGripVertical } from "react-icons/bs";
+import { FaFileAlt } from "react-icons/fa";
+import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
+import GreenCheckmark from "./GreenCheckmark";
+import "./assignments.css"; 
+
 export default function Assignments() {
-    return (
-      <div id="wd-assignments">
-        {/* Search bar and buttons */}
-        <input
-          placeholder="Search for Assignments"
-          id="wd-search-assignment"
-        />
-        <button id="wd-add-assignment-group">+ Group</button>
-        <button id="wd-add-assignment">+ Assignment</button>
-  
-        {/* Assignments title */}
-        <h3 id="wd-assignments-title">
-          ASSIGNMENTS 40% of Total <button>+</button>
-        </h3>
-  
-        {/* List of assignments */}
-        <ul id="wd-assignment-list">
-          {/* Assignment 1 */}
-          <li className="wd-assignment-list-item">
-            <a
-              href="#/Kambaz/Courses/1234/Assignments/123"
-              className="wd-assignment-link"
-            >
-              A1 - ENV + HTML
-            </a>
-            <p>Multiple Modules | <strong>Not available until May 6 at 12:00am</strong></p>
-            <p>Due May 13 at 11:59pm | 100 pts</p>
-          </li>
-  
-          {/* Assignment 2 */}
-          <li className="wd-assignment-list-item">
-            <a
-              href="#/Kambaz/Courses/1234/Assignments/124"
-              className="wd-assignment-link"
-            >
-              A2 - CSS + BOOTSTRAP
-            </a>
-            <p>Multiple Modules | <strong>Not available until May 13 at 12:00am</strong></p>
-            <p>Due May 20 at 11:59pm | 100 pts</p>
-          </li>
-  
-          {/* Assignment 3 */}
-          <li className="wd-assignment-list-item">
-            <a
-              href="#/Kambaz/Courses/1234/Assignments/125"
-              className="wd-assignment-link"
-            >
-              A3 - JAVASCRIPT + REACT
-            </a>
-            <p>Multiple Modules | <strong>Not available until May 20 at 12:00am</strong></p>
-            <p>Due May 27 at 11:59pm | 100 pts</p>
-          </li>
-        </ul>
-      </div>
-    );
-  }
-  
+  return (
+    <Container fluid>
+      <Row>
+        <Col md={9}>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <input
+              type="text"
+              placeholder="Search for Assignments"
+              className="form-control w-50"
+            />
+            <div>
+              <Button variant="light" className="me-2">+ Group</Button>
+              <Button variant="danger">+ Assignment</Button>
+            </div>
+          </div>
+
+          <ListGroup className="rounded-0">
+            <ListGroup.Item className="d-flex justify-content-between align-items-center p-3 bg-light">
+              <div className="fw-bold">
+                <BsGripVertical className="me-2" />
+                ASSIGNMENTS
+              </div>
+              <div className="d-flex align-items-center">
+                <span className="text-secondary me-3">40% of Total</span>
+                <Button variant="light" className="p-0 border-0">
+                  <BsThreeDotsVertical />
+                </Button>
+              </div>
+            </ListGroup.Item>
+
+            {[
+              {
+                id: "123",
+                title: "A1 - ENV + HTML",
+                due: "May 13 at 11:59pm",
+                points: "100 pts",
+                available: "May 6 at 12:00am",
+              },
+              {
+                id: "124",
+                title: "A2 - CSS + BOOTSTRAP",
+                due: "May 20 at 11:59pm",
+                points: "100 pts",
+                available: "May 13 at 12:00am",
+              },
+              {
+                id: "125",
+                title: "A3 - JAVASCRIPT + REACT",
+                due: "May 27 at 11:59pm",
+                points: "100 pts",
+                available: "May 20 at 12:00am",
+              },
+            ].map((assignment) => (
+              <ListGroup.Item
+                key={assignment.id}
+                className="d-flex align-items-center border rounded p-3 position-relative"
+              >
+                <div className="border-success border-4 position-absolute start-0 top-0 bottom-0"></div>
+                <BsGripVertical className="me-2 fs-5 text-secondary" />
+                <FaFileAlt className="me-2 text-success" />
+                <div className="flex-grow-1">
+                  <a
+                    href={`#/Kambaz/Courses/1234/Assignments/${assignment.id}`}
+                    className="fw-bold text-primary text-decoration-none"
+                  >
+                    {assignment.title}
+                  </a>
+                  <p className="mb-0">
+                    <span className="text-danger">Multiple Modules</span> |  
+                    <strong> Not available until {assignment.available}</strong>
+                  </p>
+                  <p className="mb-0 text-secondary">
+                    <strong>Due</strong> {assignment.due} | {assignment.points}
+                  </p>
+                </div>
+                <GreenCheckmark />
+                <Button variant="light" className="p-0 border-0 ms-3">
+                  <BsThreeDotsVertical />
+                </Button>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Col>
+      </Row>
+    </Container>
+  );
+}

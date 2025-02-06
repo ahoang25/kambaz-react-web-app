@@ -15,7 +15,6 @@ export default function CourseStatus() {
         </Button>
       </div>
 
-      {/* Action Buttons */}
       <div className="d-grid gap-2">
         <Button variant="secondary" className="d-flex align-items-center">
           <FaDownload className="me-2" /> Import Existing Content
