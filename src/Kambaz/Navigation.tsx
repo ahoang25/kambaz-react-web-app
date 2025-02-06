@@ -9,7 +9,7 @@ export default function KambazNavigation() {
   const location = useLocation();  // Get the current route
 
   // Function to determine if a link is active
-  const getLinkClass = (path) => 
+  const getLinkClass = (path: string) => 
     location.pathname === path 
       ? "list-group-item text-center border-0 bg-white text-danger"
       : "list-group-item text-center border-0 bg-black text-white";

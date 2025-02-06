@@ -1,5 +1,4 @@
 import ModulesControls from "./ModulesControls";
-import CourseStatus from "./CourseStatus";
 import LessonControlButtons from "./LessonControlButtons";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
