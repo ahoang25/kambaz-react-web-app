@@ -20,7 +20,7 @@ export default function Modules() {
           <ListGroup className="rounded-0" id="wd-modules">
             {courseModules.map((module) => (
               <ListGroup.Item key={module._id} className="wd-module p-0 mb-5 fs-5 border-gray">
-                <div className="wd-title p-3 ps-2 bg-secondary d-flex align-items-center">
+                <div className="wd-title p-3 ps-2 module-header d-flex align-items-center">
                   <BsGripVertical className="me-2 fs-3" />
                   <span className="fw-bold">{module.name}</span>
                   <div className="ms-auto"><GreenCheckmark /></div>

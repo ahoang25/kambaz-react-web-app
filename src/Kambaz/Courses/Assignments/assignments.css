@@ -6,7 +6,7 @@
 }
 
 .wd-module {
-  border-left: 4px solid green !important;
+  border-left: none !important;
   border-radius: 6px;
   overflow: hidden;
   background-color: white;

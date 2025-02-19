@@ -1,21 +1,20 @@
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 import { Button, Dropdown } from "react-bootstrap";
-import "./modules.css"
-
+import "./modules.css";
 
 export default function ModulesControls() {
   return (
     <div id="wd-modules-controls" className="d-flex flex-nowrap gap-2 justify-content-end align-items-center overflow-auto mb-3">
-      <Button variant="secondary" size="lg" id="wd-collapse-all">
+      <Button variant="light" size="lg" id="wd-collapse-all" className="wd-light-gray-btn">
         Collapse All
       </Button>
-      <Button variant="secondary" size="lg" id="wd-view-progress">
+      <Button variant="light" size="lg" id="wd-view-progress" className="wd-light-gray-btn">
         View Progress
       </Button>
 
       <Dropdown>
-        <Dropdown.Toggle variant="secondary" size="lg" id="wd-publish-all-btn">
+        <Dropdown.Toggle variant="light" size="lg" id="wd-publish-all-btn" className="wd-light-gray-btn wd-publish-all-btn">
           <GreenCheckmark /> Publish All
         </Dropdown.Toggle>
         <Dropdown.Menu>
@@ -31,10 +30,11 @@ export default function ModulesControls() {
         </Dropdown.Menu>
       </Dropdown>
 
-      <Button variant="danger" size="lg" id="wd-add-module-btn">
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        Module
-      </Button>
+      <Button variant="danger" size="lg" id="wd-add-module-btn" style={{ minWidth: "120px", whiteSpace: "nowrap" }}>
+  <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+  Module
+</Button>
+
     </div>
   );
 }
