@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Form, Container } from "react-bootstrap";
+import { Form, Container, Button } from "react-bootstrap";
 import "./profile.css"; 
 
 export default function Profile() {
@@ -40,7 +40,9 @@ export default function Profile() {
           </Form.Select>
         </Form.Group>
 
-        <Link to="/Kambaz/Account/Signin" >Sign out</Link>
+        <Link to="/Kambaz/Account/Signin">
+          <Button variant="danger" className="w-100">Signout</Button>
+        </Link>
       </Form>
     </Container>
   );

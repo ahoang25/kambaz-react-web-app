@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Form, Container } from "react-bootstrap";
+import { Form, Button, Container } from "react-bootstrap";
 import "./signup.css"; 
 
 export default function Signup() {
@@ -15,8 +15,12 @@ export default function Signup() {
           <Form.Control type="password" placeholder="Password" />
         </Form.Group>
 
+        <Link to="/Kambaz/Account/Profile">
+  <Button variant="primary" className="w-100 mb-2">
+    Signup
+  </Button>
+</Link>
 
-        <Link  to="/Kambaz/Account/Profile" > Sign up </Link><br />
 
         <Link to="/Kambaz/Account/Signin" className="signup-link">
           Signin

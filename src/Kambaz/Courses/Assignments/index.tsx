@@ -2,9 +2,14 @@ import { BsThreeDotsVertical, BsGripVertical } from "react-icons/bs";
 import { FaFileAlt } from "react-icons/fa";
 import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import GreenCheckmark from "./GreenCheckmark";
-import "./assignments.css"; 
+import { Link, useParams } from "react-router-dom"; 
+import * as db from "../../Database"; 
+import "./assignments.css";
 
 export default function Assignments() {
+  const { cid } = useParams(); 
+  const courseAssignments = db.assignments.filter((assignment) => assignment.course === cid); 
+
   return (
     <Container fluid>
       <Row>
@@ -35,49 +40,27 @@ export default function Assignments() {
               </div>
             </ListGroup.Item>
 
-            {[
-              {
-                id: "123",
-                title: "A1 - ENV + HTML",
-                due: "May 13 at 11:59pm",
-                points: "100 pts",
-                available: "May 6 at 12:00am",
-              },
-              {
-                id: "124",
-                title: "A2 - CSS + BOOTSTRAP",
-                due: "May 20 at 11:59pm",
-                points: "100 pts",
-                available: "May 13 at 12:00am",
-              },
-              {
-                id: "125",
-                title: "A3 - JAVASCRIPT + REACT",
-                due: "May 27 at 11:59pm",
-                points: "100 pts",
-                available: "May 20 at 12:00am",
-              },
-            ].map((assignment) => (
+            {courseAssignments.map((assignment) => (
               <ListGroup.Item
-                key={assignment.id}
+                key={assignment._id}
                 className="d-flex align-items-center border rounded p-3 position-relative"
               >
                 <div className="border-success border-4 position-absolute start-0 top-0 bottom-0"></div>
                 <BsGripVertical className="me-2 fs-5 text-secondary" />
                 <FaFileAlt className="me-2 text-success" />
                 <div className="flex-grow-1">
-                  <a
-                    href={`#/Kambaz/Courses/1234/Assignments/${assignment.id}`}
+                  <Link
+                    to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
                     className="fw-bold text-primary text-decoration-none"
                   >
                     {assignment.title}
-                  </a>
+                  </Link>
                   <p className="mb-0">
                     <span className="text-danger">Multiple Modules</span> |  
                     <strong> Not available until {assignment.available}</strong>
                   </p>
                   <p className="mb-0 text-secondary">
-                    <strong>Due</strong> {assignment.due} | {assignment.points}
+                    <strong>Due</strong> {assignment.due} | {assignment.points} pts
                   </p>
                 </div>
                 <GreenCheckmark />
