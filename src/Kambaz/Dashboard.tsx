@@ -92,7 +92,7 @@ export default function Dashboard() {
     <div
       id="wd-dashboard"
       style={{
-        marginLeft: "220px", 
+        marginLeft: "100px", 
         padding: "20px",
       }}
     >

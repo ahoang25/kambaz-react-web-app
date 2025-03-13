@@ -7,9 +7,6 @@ import ProtectedRoute from "./Account/ProtectedRoute";
 
 export default function Kambaz() {
 
-
-
-
   return (
     <div id="wd-kambaz">
       <KambazNavigation />

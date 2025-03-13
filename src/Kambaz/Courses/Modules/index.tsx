@@ -31,7 +31,7 @@ export default function Modules() {
   const [moduleName, setModuleName] = useState("");
 
   return (
-    <Container fluid>
+    <Container fluid style={{ marginLeft: "100px" }} >
       <Row>
         <Col md={9}>
           <ModulesControls

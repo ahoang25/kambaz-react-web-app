@@ -51,6 +51,7 @@ export default function Assignments() {
               type="text"
               placeholder="Search for Assignments"
               className="form-control w-50"
+              style = {{ marginLeft: "100px" }}
             />
             <div>
               <Button variant="light" className="me-2">+ Group</Button>

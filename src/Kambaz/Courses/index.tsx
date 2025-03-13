@@ -23,7 +23,7 @@ export default function Courses() {
   const breadcrumb = pathname.split("/")[4];
 
   return (
-    <div id="wd-courses">
+    <div id="wd-courses" style={{ marginLeft: "110px" }}>
       <h2 className="text-danger">
         <FaAlignJustify className="me-4 fs-4 mb-1" />
         {course ? `${course.name} > ${breadcrumb || ""}` : "Course Not Found"}
