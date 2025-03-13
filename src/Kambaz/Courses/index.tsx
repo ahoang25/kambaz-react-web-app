@@ -10,25 +10,22 @@ import PeopleTable from "./People/Table";
 import { courses } from "../Database";
 
 export default function Courses() {
-  const { cid } = useParams(); // Capture course ID from URL
-  const { pathname } = useLocation(); // Capture current URL path
+  const { cid } = useParams(); 
+  const { pathname } = useLocation(); 
 
   console.log("Captured cid from URL:", cid);
 
-  // Find course based on ID
   const course = courses.find((course) => {
     return course._id === cid;
   });
 
 
-  // Extract breadcrumb name from URL (e.g., Home, Modules, Assignments)
-  const breadcrumb = pathname.split("/")[4]; // 4th segment of path is the breadcrumb name
+  const breadcrumb = pathname.split("/")[4];
 
   return (
     <div id="wd-courses">
       <h2 className="text-danger">
         <FaAlignJustify className="me-4 fs-4 mb-1" />
-        {/* Display breadcrumb if available */}
         {course ? `${course.name} > ${breadcrumb || ""}` : "Course Not Found"}
       </h2>
       <hr />

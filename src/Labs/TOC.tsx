@@ -13,8 +13,10 @@ export default function TOC() {
             active={pathname.includes("Lab2")}> Lab 2 </Nav.Link> </Nav.Item>
         <Nav.Item> <Nav.Link as={Link} to="/Labs/Lab3" id="wd-a3"
             active={pathname.includes("Lab3")}> Lab 3 </Nav.Link> </Nav.Item>
+        <Nav.Item> <Nav.Link as={Link} to="/Labs/Lab4" id="wd-a4" active={pathname.includes("Lab4")}>
+          Lab 4 </Nav.Link></Nav.Item>
         <Nav.Item> <Nav.Link as={Link} to="/Kambaz" id="wd-a3"> Kambaz </Nav.Link> </Nav.Item>
-  
+        
         <Nav.Item>
           <Nav.Link href="https://github.com/ahoang25/kambaz-react-web-app.git">My GitHub</Nav.Link>
         </Nav.Item>

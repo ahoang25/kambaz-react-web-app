@@ -1,11 +1,32 @@
+import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 import { Button, Dropdown } from "react-bootstrap";
+import ModuleEditor from "./ModuleEditor";
 import "./modules.css";
 
-export default function ModulesControls() {
+interface ModulesControlsProps {
+  moduleName: string;
+  setModuleName: React.Dispatch<React.SetStateAction<string>>;
+
+  addModule: () => void;
+}
+
+export default function ModulesControls({
+  moduleName,
+  setModuleName,
+  addModule,
+}: ModulesControlsProps) {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
-    <div id="wd-modules-controls" className="d-flex flex-nowrap gap-2 justify-content-end align-items-center overflow-auto mb-3">
+    <div
+      id="wd-modules-controls"
+      className="d-flex flex-nowrap gap-2 justify-content-end align-items-center overflow-auto mb-3"
+    >
       <Button variant="light" size="lg" id="wd-collapse-all" className="wd-light-gray-btn">
         Collapse All
       </Button>
@@ -14,7 +35,12 @@ export default function ModulesControls() {
       </Button>
 
       <Dropdown>
-        <Dropdown.Toggle variant="light" size="lg" id="wd-publish-all-btn" className="wd-light-gray-btn wd-publish-all-btn">
+        <Dropdown.Toggle
+          variant="light"
+          size="lg"
+          id="wd-publish-all-btn"
+          className="wd-light-gray-btn wd-publish-all-btn"
+        >
           <GreenCheckmark /> Publish All
         </Dropdown.Toggle>
         <Dropdown.Menu>
@@ -30,11 +56,25 @@ export default function ModulesControls() {
         </Dropdown.Menu>
       </Dropdown>
 
-      <Button variant="danger" size="lg" id="wd-add-module-btn" style={{ minWidth: "120px", whiteSpace: "nowrap" }}>
-  <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-  Module
-</Button>
+      <Button
+        variant="danger"
+        size="lg"
+        id="wd-add-module-btn"
+        style={{ minWidth: "120px", whiteSpace: "nowrap" }}
+        onClick={handleShow}
+      >
+        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+        Module
+      </Button>
 
+      <ModuleEditor
+        show={show}
+        handleClose={handleClose}
+        dialogTitle="Add Module"
+        moduleName={moduleName}
+        setModuleName={setModuleName}
+        addModule={addModule}
+      />
     </div>
   );
 }

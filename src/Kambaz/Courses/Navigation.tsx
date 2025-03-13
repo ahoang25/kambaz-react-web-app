@@ -1,10 +1,9 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 
 export default function CourseNavigation() {
-  const { cid } = useParams(); // Ensure this matches your route definition
-  const { pathname } = useLocation(); // Get current route
+  const { cid } = useParams(); 
+  const { pathname } = useLocation(); 
 
-  // Navigation links array
   const links = [
     { label: "Home", path: "Home" },
     { label: "Modules", path: "Modules" },
@@ -21,7 +20,7 @@ export default function CourseNavigation() {
       {links.map((link) => (
         <Link 
           key={link.path} 
-          to={`/Kambaz/Courses/${cid || "default"}/${link.path}`}  // Use cid or fallback
+          to={`/Kambaz/Courses/${cid || "default"}/${link.path}`}  
           id={`wd-course-${link.path.toLowerCase()}-link`}
           className={`list-group-item border border-0 
             ${pathname.includes(link.path) ? "active" : "text-danger"}`}

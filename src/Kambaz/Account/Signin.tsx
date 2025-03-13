@@ -1,25 +1,60 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Container } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "./reducer"; 
+import * as db from "../Database"; 
 import "./signin.css"; 
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const signIn = () => {
+    const user = db.users.find(
+      (u) => u.username === credentials.username && u.password === credentials.password
+    );
+
+    if (!user) return; 
+
+    dispatch(setCurrentUser(user)); 
+    navigate("/Kambaz/Dashboard"); 
+  };
+
   return (
     <Container className="signin-wrapper d-flex justify-content-center align-items-center vh-100">
       <div className="signin-container">
         <h2 className="signin-title">Sign In</h2>
         <Form>
           <Form.Group className="mb-2">
-            <Form.Control type="text" placeholder="Username" className="signin-input" />
+            <Form.Control 
+              type="text" 
+              placeholder="Username" 
+              className="signin-input"
+              value={credentials.username}
+              onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+            />
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Control type="password" placeholder="Password" className="signin-input" />
+            <Form.Control 
+              type="password" 
+              placeholder="Password" 
+              className="signin-input"
+              value={credentials.password}
+              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+            />
           </Form.Group>
 
-          <Button variant="primary" className="signin-btn w-100">Signin</Button>
+          <Button variant="primary" className="signin-btn w-100" onClick={signIn}>
+            Sign in
+          </Button>
         </Form>
 
-        <Link to="/Kambaz/Account/Signup" className="signin-link">Signup</Link>
+        <Link to="/Kambaz/Account/Signup" className="signin-link">
+          Signup
+        </Link>
       </div>
     </Container>
   );

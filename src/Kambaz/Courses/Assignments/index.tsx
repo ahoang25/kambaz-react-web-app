@@ -1,14 +1,46 @@
-import { BsThreeDotsVertical, BsGripVertical } from "react-icons/bs";
+import  { useState } from "react";
+import { BsThreeDotsVertical, BsGripVertical, BsTrash } from "react-icons/bs";
 import { FaFileAlt } from "react-icons/fa";
-import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
+import { Container, Row, Col, ListGroup, Button, Modal } from "react-bootstrap";
 import GreenCheckmark from "./GreenCheckmark";
-import { Link, useParams } from "react-router-dom"; 
-import * as db from "../../Database"; 
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer"; 
 import "./assignments.css";
 
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;     
+  available?: string; 
+  due?: string;
+  points?: number;
+}
+
 export default function Assignments() {
-  const { cid } = useParams(); 
-  const courseAssignments = db.assignments.filter((assignment) => assignment.course === cid); 
+  const { cid } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const assignments: Assignment[] = useSelector(
+    (state: any) => state.assignmentsReducer.assignments
+  ).filter((assignment: Assignment) => assignment.course === cid);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+
+  const handleDelete = (assignment: Assignment) => {
+    setSelectedAssignment(assignment);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedAssignment) {
+      dispatch(deleteAssignment(selectedAssignment._id));
+    }
+    setShowDeleteModal(false);
+    setSelectedAssignment(null);
+  };
 
   return (
     <Container fluid>
@@ -22,7 +54,12 @@ export default function Assignments() {
             />
             <div>
               <Button variant="light" className="me-2">+ Group</Button>
-              <Button variant="danger">+ Assignment</Button>
+              <Button
+                variant="danger"
+                onClick={() => navigate(`/Kambaz/Courses/${cid}/Assignments/New`)}
+              >
+                + Assignment
+              </Button>
             </div>
           </div>
 
@@ -40,38 +77,69 @@ export default function Assignments() {
               </div>
             </ListGroup.Item>
 
-            {courseAssignments.map((assignment) => (
-              <ListGroup.Item
-                key={assignment._id}
-                className="d-flex align-items-center border rounded p-3 position-relative"
-              >
-                <div className="border-success border-4 position-absolute start-0 top-0 bottom-0"></div>
-                <BsGripVertical className="me-2 fs-5 text-secondary" />
-                <FaFileAlt className="me-2 text-success" />
-                <div className="flex-grow-1">
-                  <Link
-                    to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
-                    className="fw-bold text-primary text-decoration-none"
-                  >
-                    {assignment.title}
-                  </Link>
-                  <p className="mb-0">
-                    <span className="text-danger">Multiple Modules</span> |  
-                    <strong> Not available until {assignment.available}</strong>
-                  </p>
-                  <p className="mb-0 text-secondary">
-                    <strong>Due</strong> {assignment.due} | {assignment.points} pts
-                  </p>
-                </div>
-                <GreenCheckmark />
-                <Button variant="light" className="p-0 border-0 ms-3">
-                  <BsThreeDotsVertical />
-                </Button>
+            {assignments.length === 0 ? (
+              <ListGroup.Item className="text-center text-secondary p-4">
+                No assignments yet. Click "+ Assignment" to create one.
               </ListGroup.Item>
-            ))}
+            ) : (
+              assignments.map((assignment: Assignment) => (
+                <ListGroup.Item
+                  key={assignment._id}
+                  className="d-flex align-items-center border rounded p-3 position-relative"
+                >
+                  <BsGripVertical className="me-2 fs-5 text-secondary" />
+                  <FaFileAlt className="me-2 text-success" />
+                  <div className="flex-grow-1">
+                    <Link
+                      to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
+                      className="fw-bold text-primary text-decoration-none"
+                    >
+                      {assignment.title}
+                    </Link>
+                    <p className="mb-0">
+                      <span className="text-danger">Multiple Modules</span> |{" "}
+                      <strong>
+                        {" "}
+                        Not available until {assignment.available || "N/A"}
+                      </strong>
+                    </p>
+                    <p className="mb-0 text-secondary">
+                      <strong>Due:</strong> {assignment.due || "N/A"} |{" "}
+                      {assignment.points || "N/A"} pts
+                    </p>
+                  </div>
+                  <GreenCheckmark />
+                  <Button
+                    variant="danger"
+                    className="ms-3"
+                    onClick={() => handleDelete(assignment)}
+                  >
+                    <BsTrash />
+                  </Button>
+                </ListGroup.Item>
+              ))
+            )}
           </ListGroup>
         </Col>
       </Row>
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete{" "}
+          <strong>{selectedAssignment?.title}</strong>?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

@@ -1,105 +1,145 @@
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-import "./assignmentEditor.css";
-import * as db from "../../Database";
+import { useState } from "react";
+import { BsThreeDotsVertical, BsGripVertical, BsTrash } from "react-icons/bs";
+import { FaFileAlt } from "react-icons/fa";
+import { Container, Row, Col, ListGroup, Button, Modal } from "react-bootstrap";
+import GreenCheckmark from "./GreenCheckmark";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer"; 
+import "./assignments.css";
 
-export default function AssignmentEditor() {
-  const { cid, aid } = useParams(); // Get course ID and assignment ID from URL
-  const assignment = db.assignments.find((a) => a._id === aid); // Find assignment by ID
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;     
+  available?: string;
+  due?: string;
+  points?: number;
+}
+
+
+export default function Assignments() {
+  const { cid } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  
+  const assignments: Assignment[] = useSelector((state: any) => 
+    state.assignmentsReducer.assignments
+  ).filter((assignment: Assignment) => assignment.course === cid);
+
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+
+  const handleDelete = (assignment: Assignment) => {
+    setSelectedAssignment(assignment);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedAssignment) {
+      dispatch(deleteAssignment(selectedAssignment._id));
+    }
+    setShowDeleteModal(false);
+    setSelectedAssignment(null);
+  };
 
   return (
-    <Container fluid className="p-4">
+    <Container fluid>
       <Row>
-        <Col md={8}>
-          <Form>
-            {/* Assignment Name */}
-            <Form.Group controlId="assignmentName" className="mb-3">
-              <Form.Label className="fw-bold">Assignment Name</Form.Label>
-              <Form.Control type="text" defaultValue={assignment?.title || ""} />
-            </Form.Group>
-
-            {/* Description */}
-            <Form.Group controlId="assignmentDescription" className="mb-3">
-              <Form.Control
-                as="textarea"
-                rows={8}
-                defaultValue={`The assignment is available online.\nSubmit a link to the landing page of your Web application running on Netlify.\n\nThe landing page should include the following:\n- Your full name and section\n- Links to each of the lab assignments\n- Links to all relevant source code repositories\n- The Kanbas application should include a link to navigate back to the landing page.`}
-                style={{
-                  border: "1px solid #ced4da",
-                  borderRadius: "8px",
-                  backgroundColor: "#f8f9fa",
-                  padding: "15px",
-                  fontSize: "16px",
-                }}
-              />
-            </Form.Group>
-
-            {/* Points */}
-            <Form.Group controlId="points" className="mb-3">
-              <Form.Label className="fw-bold">Points</Form.Label>
-              <Form.Control
-                type="number"
-                defaultValue={assignment?.points || ""}
-                placeholder="Enter points"
-              />
-            </Form.Group>
-
-            {/* Assign Section */}
-            <Form.Group controlId="assignSection" className="mb-3">
-              <Form.Label className="fw-bold fs-5">Assign</Form.Label>
-
-              <Form.Group controlId="assignTo" className="mb-3">
-                <Form.Label className="fw-bold">Assign to</Form.Label>
-                <Form.Control type="text" defaultValue="Everyone" />
-              </Form.Group>
-
-              {/* Due Date */}
-              <Form.Group controlId="dueDate" className="mb-3">
-                <Form.Label className="fw-bold">Due</Form.Label>
-                <Form.Control
-                  type="text"
-                  defaultValue={assignment?.due || ""}
-                  placeholder="mm/dd/yyyy"
-                />
-              </Form.Group>
-
-              {/* Available From & Until */}
-              <Row>
-                <Col>
-                  <Form.Group controlId="availableFrom">
-                    <Form.Label className="fw-bold">Available from</Form.Label>
-                    <Form.Control
-                      type="text"
-                      defaultValue={assignment?.available || ""}
-                      placeholder="mm/dd/yyyy"
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group controlId="availableUntil">
-                    <Form.Label className="fw-bold">Until</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="mm/dd/yyyy"
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </Form.Group>
-
-            {/* Buttons */}
-            <div className="d-flex justify-content-end mt-4">
-              <Link to={`/Kambaz/Courses/${cid}/Assignments`}>
-                <Button variant="secondary" className="me-2">
-                  Cancel
-                </Button>
-              </Link>
-              <Button variant="danger">Save</Button>
+        <Col md={9}>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <input
+              type="text"
+              placeholder="Search for Assignments"
+              className="form-control w-50"
+            />
+            <div>
+              <Button variant="light" className="me-2">+ Group</Button>
+              <Button
+                variant="danger"
+                onClick={() => navigate(`/Kambaz/Courses/${cid}/Assignments/New`)}
+              >
+                + Assignment
+              </Button>
             </div>
-          </Form>
+          </div>
+
+          <ListGroup className="rounded-0">
+            <ListGroup.Item className="d-flex justify-content-between align-items-center p-3 bg-light">
+              <div className="fw-bold">
+                <BsGripVertical className="me-2" />
+                ASSIGNMENTS
+              </div>
+              <div className="d-flex align-items-center">
+                <span className="text-secondary me-3">40% of Total</span>
+                <Button variant="light" className="p-0 border-0">
+                  <BsThreeDotsVertical />
+                </Button>
+              </div>
+            </ListGroup.Item>
+
+            {assignments.length === 0 ? (
+              <ListGroup.Item className="text-center text-secondary p-4">
+                No assignments yet. Click "+ Assignment" to create one.
+              </ListGroup.Item>
+            ) : (
+              assignments.map((assignment: Assignment) => (
+                <ListGroup.Item
+                  key={assignment._id}
+                  className="d-flex align-items-center border rounded p-3 position-relative"
+                >
+                  <BsGripVertical className="me-2 fs-5 text-secondary" />
+                  <FaFileAlt className="me-2 text-success" />
+                  <div className="flex-grow-1">
+                    <Link
+                      to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
+                      className="fw-bold text-primary text-decoration-none"
+                    >
+                      {assignment.title}
+                    </Link>
+                    <p className="mb-0">
+                      <span className="text-danger">Multiple Modules</span> |  
+                      <strong> Not available until {assignment.available || "N/A"}</strong>
+                    </p>
+                    <p className="mb-0 text-secondary">
+                      <strong>Due:</strong> {assignment.due || "N/A"} |{" "}
+                      {assignment.points || "N/A"} pts
+                    </p>
+                  </div>
+                  <GreenCheckmark />
+                  <Button
+                    variant="danger"
+                    className="ms-3"
+                    onClick={() => handleDelete(assignment)}
+                  >
+                    <BsTrash />
+                  </Button>
+                </ListGroup.Item>
+              ))
+            )}
+          </ListGroup>
         </Col>
       </Row>
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete{" "}
+          <strong>{selectedAssignment?.title}</strong>?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
