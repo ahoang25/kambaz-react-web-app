@@ -43,7 +43,7 @@ export default function Assignments() {
   };
 
   return (
-    <Container fluid>
+    <Container fluid >
       <Row>
         <Col md={9}>
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -51,7 +51,6 @@ export default function Assignments() {
               type="text"
               placeholder="Search for Assignments"
               className="form-control w-50"
-              style = {{ marginLeft: "100px" }}
             />
             <div>
               <Button variant="light" className="me-2">+ Group</Button>
