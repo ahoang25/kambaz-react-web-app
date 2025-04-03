@@ -10,7 +10,7 @@ export default function KambazNavigation() {
 
   const links = [
     { label: "Dashboard", path: "/Kambaz/Dashboard", icon: AiOutlineDashboard },
-    { label: "Courses", path: "/Kambaz/Dashboard", icon: LiaBookSolid }, // Routes to Dashboard
+    { label: "Courses", path: "/Kambaz/Courses", icon: LiaBookSolid },
     { label: "Calendar", path: "/Kambaz/Calendar", icon: IoCalendarOutline },
     { label: "Inbox", path: "/Kambaz/Inbox", icon: FaInbox },
     { label: "Labs", path: "/Labs", icon: LiaCogSolid },
@@ -20,20 +20,17 @@ export default function KambazNavigation() {
     <ListGroup id="wd-kambaz-navigation" style={{ width: 120 }} 
       className="list-group rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2">
 
-      {/* NEU Logo Link */}
       <ListGroup.Item id="wd-neu-link" target="_blank" href="https://www.northeastern.edu/"
         className="bg-black border-0 text-center">
         <img src="/images/NEU.png" width="75px" />
       </ListGroup.Item>
 
-      {/* Account Section */}
       <ListGroup.Item as={Link} to="/Kambaz/Account" className={`text-center border-0 bg-black 
         ${pathname.includes("Account") ? "bg-white text-danger" : "bg-black text-white"}`}>
         <FaRegCircleUser className={`fs-1 ${pathname.includes("Account") ? "text-danger" : "text-white"}`} />
         <br />Account
       </ListGroup.Item>
 
-      {/* Dynamic Links */}
       {links.map((link) => (
         <ListGroup.Item as={Link} key={link.path} to={link.path}
           className={`bg-black text-center border-0 

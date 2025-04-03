@@ -1,6 +1,6 @@
 import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addModule, deleteModule, updateModule, editModule } from "./reducer";
+import { setModules, addModule, deleteModule, updateModule, editModule } from "./reducer";
 import ModulesControls from "./ModulesControls";
 import ModuleControlButtons from "./ModuleControlButtons";
 import LessonControlButtons from "./LessonControlButtons";
@@ -8,6 +8,12 @@ import { Container, Row, Col, ListGroup, FormControl } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { useParams } from "react-router";
 import "./modules.css";
+import * as coursesClient from "../client";  
+import { useEffect } from "react";
+import * as modulesClient from "../client";
+
+
+
 
 interface Lesson {
   _id: string;
@@ -26,6 +32,36 @@ export default function Modules() {
   const { cid } = useParams<{ cid?: string }>();
   const dispatch = useDispatch();
 
+  const saveModule = async (module: any) => {
+    await modulesClient.updateModule(module);
+    dispatch(updateModule(module));
+  };
+
+
+  const removeModule = async (moduleId: string) => {
+    await modulesClient.deleteModule(moduleId);
+    dispatch(deleteModule(moduleId));
+  };
+
+
+  const createModuleForCourse = async () => {
+    if (!cid) return;
+    const newModule = { name: moduleName, course: cid };
+    const module = await coursesClient.createModuleForCourse(cid, newModule);
+    dispatch(addModule(module));
+  };
+
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      if (cid) {
+        const modules = await coursesClient.findModulesForCourse(cid);
+        dispatch(setModules(modules));
+      }
+    };
+    fetchModules();
+  }, [cid]);
+
   const modules: Module[] = useSelector((state: any) => state.modulesReducer.modules);
 
   const [moduleName, setModuleName] = useState("");
@@ -34,19 +70,15 @@ export default function Modules() {
     <Container fluid style={{ marginLeft: "100px" }} >
       <Row>
         <Col md={9}>
-          <ModulesControls
-            moduleName={moduleName}
-            setModuleName={setModuleName}
-            addModule={() => {
-              dispatch(addModule({ name: moduleName, course: cid ?? "" }));
-              setModuleName("");
-            }}
-          />
+        <ModulesControls
+  moduleName={moduleName}
+  setModuleName={setModuleName}
+  addModule={createModuleForCourse}
+/>
+
 
           <ListGroup className="rounded-0" id="wd-modules">
-            {modules
-              .filter((m) => m.course === cid)
-              .map((m) => (
+            {modules.map((m) => (
                 <ListGroup.Item
                   key={m._id}
                   className="wd-module p-0 mb-5 fs-5 border-gray"
@@ -62,21 +94,21 @@ export default function Modules() {
                           dispatch(updateModule({ ...m, name: e.target.value }))
                         }
                         onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                          if (e.key === "Enter") {
-                            dispatch(updateModule({ ...m, editing: false }));
-                          }
-                        }}
+                            if (e.key === "Enter") {
+                              saveModule({ ...m, editing: false });
+                            }
+                          }}
                       />
                     ) : (
                       <span className="fw-bold">{m.name}</span>
                     )}
 
                     <div className="ms-auto d-flex align-items-center">
-                      <ModuleControlButtons
-                        moduleId={m._id}
-                        deleteModule={() => dispatch(deleteModule(m._id))}
-                        editModule={() => dispatch(editModule(m._id))}
-                      />
+                    <ModuleControlButtons
+  moduleId={m._id}
+  deleteModule={() => removeModule(m._id)} // ✅ Deletes on server AND Redux
+  editModule={() => dispatch(editModule(m._id))}
+/>
                     </div>
                   </div>
 

@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, Col, Row, Container, Form } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
-import { addCourse, deleteCourse, updateCourse } from "./Courses/reducer";
-import { toggleEnrollment } from "./Courses/enrollmentsReducer";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { useMemo } from "react";
 
 interface Course {
   _id: string;
@@ -23,24 +22,31 @@ interface Enrollment {
   course: string;
 }
 
+interface DashboardProps {
+  courses: Course[];
+  enrollments: Enrollment[];
+  addNewCourse: (course: Course) => Promise<void>;
+  updateCourse: (course: Course) => Promise<void>;
+  deleteCourse: (courseId: string) => Promise<void>;
+  enrollUser: (userId: string, courseId: string) => Promise<void>;
+  unenrollUser: (userId: string, courseId: string) => Promise<void>;
+}
 
-
-export default function Dashboard() {
-  const dispatch = useDispatch();
-
+export default function Dashboard({
+  courses,
+  enrollments,
+  addNewCourse,
+  updateCourse,
+  deleteCourse,
+  enrollUser,
+  unenrollUser,
+}: DashboardProps) {
   const currentUser: User | null = useSelector(
     (state: any) => state.accountReducer.currentUser
-  );
-  const courses: Course[] = useSelector(
-    (state: any) => state.coursesReducer.courses
-  );
-  const enrollments: Enrollment[] = useSelector(
-    (state: any) => state.enrollmentsReducer.enrollments
   );
 
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
   const [showAllCourses, setShowAllCourses] = useState(false);
 
   const [course, setCourse] = useState<Course>({
@@ -51,32 +57,18 @@ export default function Dashboard() {
     image: "/images/reactjs.jpg",
   });
 
-  const enrolledCourses = courses.filter((crs) =>
-    enrollments.some(
-      (enr) =>
-        enr.user === currentUser?._id && enr.course === crs._id
-    )
-  );
-
-  const coursesToDisplay = showAllCourses ? courses : enrolledCourses;
-
-  if (!currentUser || !currentUser._id) {
-    return <p className="text-center">No user signed in. Please log in.</p>;
-  }
-
   const handleEdit = (selectedCourse: Course) => {
     setCourse(selectedCourse);
     setShowForm(true);
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (isEditing) {
-      dispatch(updateCourse(course));
+      await updateCourse(course);
     } else {
-      dispatch(addCourse(course));
+      await addNewCourse(course);
     }
-    // Reset form
     setShowForm(false);
     setIsEditing(false);
     setCourse({
@@ -88,14 +80,22 @@ export default function Dashboard() {
     });
   };
 
+  const enrolledCourses = useMemo(() => {
+    return courses.filter((crs) =>
+      enrollments.some(
+        (enr) => enr.user === currentUser?._id && enr.course === crs._id
+      )
+    );
+  }, [courses, enrollments, currentUser]);
+
+  const coursesToDisplay = showAllCourses ? courses : enrolledCourses;
+
+  if (!currentUser || !currentUser._id) {
+    return <p className="text-center">No user signed in. Please log in.</p>;
+  }
+
   return (
-    <div
-      id="wd-dashboard"
-      style={{
-        marginLeft: "100px", 
-        padding: "20px",
-      }}
-    >
+    <div id="wd-dashboard" style={{ marginLeft: "100px", padding: "20px" }}>
       <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
 
@@ -103,7 +103,10 @@ export default function Dashboard() {
         className="mb-3 d-flex align-items-center justify-content-between"
         style={{ maxWidth: "400px" }}
       >
-        <Button variant="info" onClick={() => setShowAllCourses(!showAllCourses)}>
+        <Button
+          variant="info"
+          onClick={() => setShowAllCourses(!showAllCourses)}
+        >
           {showAllCourses ? "Show Enrolled" : "Show All"}
         </Button>
       </div>
@@ -130,42 +133,38 @@ export default function Dashboard() {
           }}
         >
           <h2 className="m-0">{isEditing ? "Edit Course" : "New Course"}</h2>
-
           <Form className="mt-3">
             <Form.Group className="mb-3">
               <Form.Control
                 type="text"
                 value={course.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange={(e) =>
                   setCourse({ ...course, name: e.target.value })
                 }
                 placeholder="Course Name"
               />
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Control
                 type="text"
                 value={course.number}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange={(e) =>
                   setCourse({ ...course, number: e.target.value })
                 }
                 placeholder="Course Number"
               />
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Control
                 as="textarea"
                 rows={3}
                 value={course.description}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                onChange={(e) =>
                   setCourse({ ...course, description: e.target.value })
                 }
                 placeholder="Course Description"
               />
             </Form.Group>
-
             <div className="d-flex justify-content-end">
               <Button
                 variant="secondary"
@@ -173,18 +172,14 @@ export default function Dashboard() {
                 onClick={() => {
                   setShowForm(false);
                   setIsEditing(false);
-                  setCourse({
-                    _id: uuidv4(),
-                    name: "",
-                    number: "",
-                    description: "",
-                    image: "/images/reactjs.jpg",
-                  });
                 }}
               >
                 Cancel
               </Button>
-              <Button variant={isEditing ? "warning" : "primary"} onClick={handleSave}>
+              <Button
+                variant={isEditing ? "warning" : "primary"}
+                onClick={handleSave}
+              >
                 {isEditing ? "Update" : "Add"}
               </Button>
             </div>
@@ -194,16 +189,16 @@ export default function Dashboard() {
 
       <hr />
       <h2 id="wd-dashboard-published">
-        {showAllCourses ? "All Courses" : "Enrolled Courses"} ({coursesToDisplay.length})
+        {showAllCourses ? "All Courses" : "Enrolled Courses"} (
+        {coursesToDisplay.length})
       </h2>
 
       <Container fluid>
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-          {coursesToDisplay.map((c: Course) => {
+          {coursesToDisplay.map((c) => {
             const isEnrolled = enrollments.some(
               (enr) => enr.user === currentUser._id && enr.course === c._id
             );
-
             return (
               <Col key={c._id} style={{ width: "300px" }}>
                 <Card>
@@ -227,7 +222,6 @@ export default function Dashboard() {
                       <Button variant="primary">Go</Button>
                     </Card.Body>
                   </Link>
-
                   <div className="p-2">
                     <Button
                       variant="warning"
@@ -244,22 +238,24 @@ export default function Dashboard() {
                       className="me-2"
                       onClick={(e) => {
                         e.preventDefault();
-                        dispatch(deleteCourse(c._id));
+                        deleteCourse(c._id);
                       }}
                     >
                       Delete
                     </Button>
-
                     <Button
                       variant={isEnrolled ? "danger" : "success"}
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.preventDefault();
-                        dispatch(
-                          toggleEnrollment({
-                            userId: currentUser._id,
-                            courseId: c._id,
-                          })
-                        );
+                        try {
+                          if (isEnrolled) {
+                            await unenrollUser(currentUser._id, c._id);
+                          } else {
+                            await enrollUser(currentUser._id, c._id);
+                          }
+                        } catch (err) {
+                          console.error("Error toggling enrollment:", err);
+                        }
                       }}
                     >
                       {isEnrolled ? "Unenroll" : "Enroll"}

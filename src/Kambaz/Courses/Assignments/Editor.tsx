@@ -6,6 +6,8 @@ import { addAssignment, updateAssignment } from "./reducer";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./assignmentEditor.css";
+import * as coursesClient from "../client";
+
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams(); 
@@ -32,23 +34,26 @@ export default function AssignmentEditor() {
     }
   }, [existingAssignment]);
 
-  const handleSave = () => {
-    if (!assignment.title.trim()) return; 
-
+  const handleSave = async () => {
+    if (!assignment.title.trim()) return;
+  
     const assignmentToSave = {
       ...assignment,
-      available: assignment.available, 
-      due: assignment.due, 
+      available: assignment.available,
+      due: assignment.due,
     };
-
+  
     if (existingAssignment) {
+      await coursesClient.updateAssignment(assignment._id, assignmentToSave);
       dispatch(updateAssignment(assignmentToSave));
     } else {
-      dispatch(addAssignment(assignmentToSave));
+      const created = await coursesClient.createAssignmentForCourse(cid!, assignmentToSave);
+      dispatch(addAssignment(created));
     }
-
+  
     navigate(`/Kambaz/Courses/${cid}/Assignments`);
   };
+  
 
   return (
     <Container fluid className="p-4">
