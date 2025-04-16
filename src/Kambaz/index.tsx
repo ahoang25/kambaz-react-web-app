@@ -15,7 +15,7 @@ import * as userClient from "./Account/client";
 export default function Kambaz() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [courses, setCourses] = useState<any[]>([]);
-  const [enrollments, setEnrollments] = useState<any[]>([]); 
+  const [enrollments] = useState<any[]>([]); 
   
   const fetchCourses = async () => {
     if (!currentUser?._id) return;
@@ -70,8 +70,8 @@ export default function Kambaz() {
 
   const enrollUser = async (userId: string, courseId: string) => {
     try {
-      await courseClient.enrollUser(userId, courseId);
-      await fetchEnrollments(); 
+      await courseClient.enrollIntoCourse(userId, courseId);
+      await findCoursesForUser(); 
     } catch (err) {
       console.error("Enroll failed", err);
     }
@@ -79,8 +79,8 @@ export default function Kambaz() {
 
   const unenrollUser = async (userId: string, courseId: string) => {
     try {
-      await courseClient.unenrollUser(userId, courseId);
-      await fetchEnrollments(); 
+      await courseClient.unenrollFromCourse(userId, courseId);
+      await findCoursesForUser(); 
     } catch (err) {
       console.error("Unenroll failed", err);
     }
