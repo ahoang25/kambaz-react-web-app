@@ -13,17 +13,17 @@ export const findAllUsers = async () => {
 
 
 export const findUsersByPartialName = async (name: string) => {
-  const response = await axios.get(`${USERS_API}?name=${name}`);
+  const response = await axiosWithCredentials.get(`${USERS_API}?name=${name}`);
   return response.data;
 };
 
 export const findUserById = async (id: string) => {
-  const response = await axios.get(`${USERS_API}/${id}`);
+  const response = await axiosWithCredentials.get(`${USERS_API}/${id}`);
   return response.data;
 };
 
 export const deleteUser = async (userId: string) => {
-  const response = await axios.delete( `${USERS_API}/${userId}` );
+  const response = await axiosWithCredentials.delete( `${USERS_API}/${userId}` );
   return response.data;
 };
 
@@ -33,24 +33,26 @@ export const updateUser = async (user: any) => {
 };
 
 export const createUser = async (user: any) => {
-  const response = await axios.post(`${USERS_API}`, user);
+  const response = await axiosWithCredentials.post(`${USERS_API}`, user);
   return response.data;
 };
 
 export const fetchAllCourses = async () => {
-  const { data } = await axios.get(COURSES_API);
+  const { data } = await axiosWithCredentials.get(COURSES_API);
   return data;
 };
 
 export const createCourse = async (course: any) => {
-    const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
-    return data;
-  };
+  const { data } = await axiosWithCredentials.post(COURSES_API, course);
+  return data;
+ };
+ 
   
-  export const deleteCourse = async (id: string) => {
-    const { data } = await axiosWithCredentials.delete(`${COURSES_API}/${id}`);
-    return data;
-  };
+ export const deleteCourse = async (id: string) => {
+  const { data } = await axiosWithCredentials.delete(`${COURSES_API}/${id}`);
+  return data;
+ };
+ 
   
   export const updateCourse = async (course: any) => {
     const { data } = await axiosWithCredentials.put(`${COURSES_API}/${course._id}`, course);
@@ -74,47 +76,62 @@ export const createCourse = async (course: any) => {
   };
 
   export const createModuleForCourse = async (courseId: string, module: any) => {
-    const response = await axios.post(
+    const response = await axiosWithCredentials.post(
       `${COURSES_API}/${courseId}/modules`,
       module
     );
     return response.data;
-  };
-  
+   };   
 
   export const findModulesForCourse = async (courseId: string) => {
-    const response = await axios
-      .get(`${COURSES_API}/${courseId}/modules`);
+    const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/modules`);
     return response.data;
-  };
-  
-  export const updateModule = async (module: any) => {
-    const { data } = await axios.put(`${MODULES_API}/${module._id}`, module);
+   };
+   
+   export const updateModule = async (module: any) => {
+    const { data } = await axiosWithCredentials.put(
+      `${MODULES_API}/${module._id}`,
+      module
+    );
     return data;
-  };
+   };
+   
   
-  export const deleteModule = async (moduleId: string) => {
-    const response = await axios.delete(`${MODULES_API}/${moduleId}`);
-    return response.data; 
-};
+   export const deleteModule = async (moduleId: string) => {
+    const response = await axiosWithCredentials.delete(
+      `${MODULES_API}/${moduleId}`
+    );
+    return response.data;
+   };
+   
    
 
 export const createAssignmentForCourse = async (courseId: string, assignment: any) => {
-    const response = await axios.post(`${COURSES_API}/${courseId}/assignments`, assignment);
+    const response = await axiosWithCredentials.post(`${COURSES_API}/${courseId}/assignments`, assignment);
     return response.data;
   };
 
   export const findAssignmentsForCourse = async (courseId: string) => {
-    const response = await axios.get(`${COURSES_API}/${courseId}/assignments`);
+    const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/assignments`);
     return response.data;
   };
   
   export const updateAssignment = async (assignmentId: string, assignment: any) => {
-  const { data } = await axios.put(`${COURSES_API}/assignments/${assignmentId}`, assignment);
+  const { data } = await axiosWithCredentials.put(`${COURSES_API}/assignments/${assignmentId}`, assignment);
   return data;
 };
 
 export const deleteAssignment = async (assignmentId: string) => {
-  const { data } = await axios.delete(`${COURSES_API}/assignments/${assignmentId}`);
+  const { data } = await axiosWithCredentials.delete(`${COURSES_API}/assignments/${assignmentId}`);
   return data;
 };
+
+export const findMyCourses = async () => {
+  const response = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
+  return response.data;
+};
+export const findCoursesForUser = async () => {
+  const response = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
+  return response.data;
+};
+

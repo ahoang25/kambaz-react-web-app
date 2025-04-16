@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, Col, Row, Container, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { useMemo } from "react";
 
 interface Course {
   _id: string;
@@ -11,6 +10,7 @@ interface Course {
   number: string;
   description: string;
   image: string;
+  enrolled?: boolean; 
 }
 
 interface User {
@@ -19,7 +19,7 @@ interface User {
 
 interface Enrollment {
   user: string;
-  course: string;
+  course: any; 
 }
 
 interface DashboardProps {
@@ -80,10 +80,11 @@ export default function Dashboard({
     });
   };
 
+  
   const enrolledCourses = useMemo(() => {
     return courses.filter((crs) =>
       enrollments.some(
-        (enr) => enr.user === currentUser?._id && enr.course === crs._id
+        (enr) => enr.user === currentUser?._id && enr.course?._id === crs._id
       )
     );
   }, [courses, enrollments, currentUser]);
@@ -99,23 +100,14 @@ export default function Dashboard({
       <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
 
-      <div
-        className="mb-3 d-flex align-items-center justify-content-between"
-        style={{ maxWidth: "400px" }}
-      >
-        <Button
-          variant="info"
-          onClick={() => setShowAllCourses(!showAllCourses)}
-        >
+      <div className="mb-3 d-flex align-items-center justify-content-between" style={{ maxWidth: "400px" }}>
+        <Button variant="info" onClick={() => setShowAllCourses(!showAllCourses)}>
           {showAllCourses ? "Show Enrolled" : "Show All"}
         </Button>
       </div>
 
       {!showForm && (
-        <div
-          className="d-flex align-items-center justify-content-between"
-          style={{ maxWidth: "400px" }}
-        >
+        <div className="d-flex align-items-center justify-content-between" style={{ maxWidth: "400px" }}>
           <h2 className="m-0">New Course</h2>
           <Button variant="primary" onClick={() => setShowForm(true)}>
             Add
@@ -124,23 +116,14 @@ export default function Dashboard({
       )}
 
       {showForm && (
-        <div
-          style={{
-            maxWidth: "400px",
-            border: "1px solid #ddd",
-            padding: "15px",
-            borderRadius: "8px",
-          }}
-        >
+        <div style={{ maxWidth: "400px", border: "1px solid #ddd", padding: "15px", borderRadius: "8px" }}>
           <h2 className="m-0">{isEditing ? "Edit Course" : "New Course"}</h2>
           <Form className="mt-3">
             <Form.Group className="mb-3">
               <Form.Control
                 type="text"
                 value={course.name}
-                onChange={(e) =>
-                  setCourse({ ...course, name: e.target.value })
-                }
+                onChange={(e) => setCourse({ ...course, name: e.target.value })}
                 placeholder="Course Name"
               />
             </Form.Group>
@@ -148,9 +131,7 @@ export default function Dashboard({
               <Form.Control
                 type="text"
                 value={course.number}
-                onChange={(e) =>
-                  setCourse({ ...course, number: e.target.value })
-                }
+                onChange={(e) => setCourse({ ...course, number: e.target.value })}
                 placeholder="Course Number"
               />
             </Form.Group>
@@ -159,27 +140,15 @@ export default function Dashboard({
                 as="textarea"
                 rows={3}
                 value={course.description}
-                onChange={(e) =>
-                  setCourse({ ...course, description: e.target.value })
-                }
+                onChange={(e) => setCourse({ ...course, description: e.target.value })}
                 placeholder="Course Description"
               />
             </Form.Group>
             <div className="d-flex justify-content-end">
-              <Button
-                variant="secondary"
-                className="me-2"
-                onClick={() => {
-                  setShowForm(false);
-                  setIsEditing(false);
-                }}
-              >
+              <Button variant="secondary" className="me-2" onClick={() => { setShowForm(false); setIsEditing(false); }}>
                 Cancel
               </Button>
-              <Button
-                variant={isEditing ? "warning" : "primary"}
-                onClick={handleSave}
-              >
+              <Button variant={isEditing ? "warning" : "primary"} onClick={handleSave}>
                 {isEditing ? "Update" : "Add"}
               </Button>
             </div>
@@ -189,16 +158,16 @@ export default function Dashboard({
 
       <hr />
       <h2 id="wd-dashboard-published">
-        {showAllCourses ? "All Courses" : "Enrolled Courses"} (
-        {coursesToDisplay.length})
+        {showAllCourses ? "All Courses" : "Enrolled Courses"} ({coursesToDisplay.length})
       </h2>
 
       <Container fluid>
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
           {coursesToDisplay.map((c) => {
-            const isEnrolled = enrollments.some(
-              (enr) => enr.user === currentUser._id && enr.course === c._id
-            );
+            const isEnrolled =
+              typeof c.enrolled === "boolean"
+                ? c.enrolled
+                : enrollments.some((enr) => enr.course._id === c._id);
             return (
               <Col key={c._id} style={{ width: "300px" }}>
                 <Card>

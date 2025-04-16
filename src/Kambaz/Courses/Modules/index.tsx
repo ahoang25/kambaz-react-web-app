@@ -12,9 +12,6 @@ import * as coursesClient from "../client";
 import { useEffect } from "react";
 import * as modulesClient from "../client";
 
-
-
-
 interface Lesson {
   _id: string;
   name: string;
@@ -37,12 +34,10 @@ export default function Modules() {
     dispatch(updateModule(module));
   };
 
-
   const removeModule = async (moduleId: string) => {
     await modulesClient.deleteModule(moduleId);
     dispatch(deleteModule(moduleId));
   };
-
 
   const createModuleForCourse = async () => {
     if (!cid) return;
@@ -50,7 +45,6 @@ export default function Modules() {
     const module = await coursesClient.createModuleForCourse(cid, newModule);
     dispatch(addModule(module));
   };
-
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -75,7 +69,6 @@ export default function Modules() {
   setModuleName={setModuleName}
   addModule={createModuleForCourse}
 />
-
 
           <ListGroup className="rounded-0" id="wd-modules">
             {modules.map((m) => (
@@ -106,7 +99,7 @@ export default function Modules() {
                     <div className="ms-auto d-flex align-items-center">
                     <ModuleControlButtons
   moduleId={m._id}
-  deleteModule={() => removeModule(m._id)} // ✅ Deletes on server AND Redux
+  deleteModule={() => removeModule(m._id)} 
   editModule={() => dispatch(editModule(m._id))}
 />
                     </div>
