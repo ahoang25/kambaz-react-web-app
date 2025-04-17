@@ -26,15 +26,13 @@ export default function Kambaz() {
  
 
   const findCoursesForUser = async () => {
-    if (!currentUser?._id) return;
     try {
-      const courses = await userClient.findCoursesForUser(currentUser._id);
+      const courses = await userClient.findCoursesForUser();
       setEnrollments(courses);
     } catch (error) {
       console.error("Failed to fetch enrolled courses", error);
     }
   };
-  
 
 useEffect(() => {
   if (!currentUser || !currentUser._id) return;
