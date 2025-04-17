@@ -68,19 +68,19 @@ export default function Kambaz() {
     }
   };
 
-  const enrollUser = async (userId: string, courseId: string) => {
+  const enrollUser = async (_userId: string, courseId: string) => {
     try {
-      await courseClient.enrollIntoCourse(userId, courseId);
-      await findCoursesForUser(); 
+      await courseClient.enrollIntoCourse(courseId); 
+      await findCoursesForUser();
     } catch (err) {
       console.error("Enroll failed", err);
     }
   };
-
-  const unenrollUser = async (userId: string, courseId: string) => {
+  
+  const unenrollUser = async (_userId: string, courseId: string) => {
     try {
-      await courseClient.unenrollFromCourse(userId, courseId);
-      await findCoursesForUser(); 
+      await courseClient.unenrollFromCourse(courseId);  
+      await findCoursesForUser();
     } catch (err) {
       console.error("Unenroll failed", err);
     }

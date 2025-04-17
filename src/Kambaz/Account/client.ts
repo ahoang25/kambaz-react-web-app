@@ -16,7 +16,7 @@ export const findUsersByPartialName = async (name: string) => {
 
 export const findUsersByRole = async (role: string) => {
   const response = await
-    axios.get(`${USERS_API}?role=${role}`);
+  axiosWithCredentials.get(`${USERS_API}?role=${role}`);
   return response.data;
 };
 
