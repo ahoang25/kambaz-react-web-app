@@ -6,8 +6,7 @@ import Modules from "./Modules";
 import Home from "./Home";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
-
-import PeoplePage from "./People";
+import PeoplePage from "./People/PeoplePage";
 import { courses } from "../Database";
 
 export default function Courses() {

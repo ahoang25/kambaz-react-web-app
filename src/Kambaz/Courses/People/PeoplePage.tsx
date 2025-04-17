@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import PeopleTable from "./Table";
-import * as client from "../Courses/client";
+import * as client from "../client";
 
 export default function PeoplePage() {
   const { cid } = useParams();
