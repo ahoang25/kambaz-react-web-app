@@ -34,6 +34,10 @@ export default function TOC() {
           <Nav.Link href="https://kambaz-node-server-app-rps4.onrender.com">My Render </Nav.Link>
         </Nav.Item>
 
+        <Nav.Item>
+          <Nav.Link href="https://kambaz-node-server-app-1-0mws.onrender.com">My Render for A6 </Nav.Link>
+        </Nav.Item>
+
       </Nav>
    );}
    
