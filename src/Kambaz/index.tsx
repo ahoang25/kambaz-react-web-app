@@ -15,7 +15,7 @@ import * as userClient from "./Account/client";
 export default function Kambaz() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [courses, setCourses] = useState<any[]>([]);
-  const [enrollments] = useState<any[]>([]); 
+  const [enrollments, setEnrollments] = useState<any[]>([]); 
   
   
   const fetchCourses = async () => {
@@ -29,7 +29,7 @@ export default function Kambaz() {
     if (!currentUser?._id) return;
     try {
       const courses = await userClient.findCoursesForUser(currentUser._id);
-      setCourses(courses);
+      setEnrollments(courses);
     } catch (error) {
       console.error("Failed to fetch enrolled courses", error);
     }
