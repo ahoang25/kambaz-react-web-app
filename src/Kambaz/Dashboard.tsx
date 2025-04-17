@@ -82,9 +82,14 @@ export default function Dashboard({
 
   
   const enrolledCourses = useMemo(() => {
+    if (!currentUser || !currentUser._id) return [];
+  
     return courses.filter((crs) =>
       enrollments.some(
-        (enr) => enr.user === currentUser?._id && enr.course?._id === crs._id
+        (enr) =>
+          enr?.user === currentUser._id &&
+          enr?.course &&
+          enr.course._id === crs._id
       )
     );
   }, [courses, enrollments, currentUser]);
@@ -167,7 +172,9 @@ export default function Dashboard({
             const isEnrolled =
               typeof c.enrolled === "boolean"
                 ? c.enrolled
-                : enrollments.some((enr) => enr.course._id === c._id);
+                : enrollments.some(
+                  (enr) => enr.user === currentUser?._id && enr.course._id === c._id
+                );
             return (
               <Col key={c._id} style={{ width: "300px" }}>
                 <Card>
