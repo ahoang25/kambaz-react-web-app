@@ -49,7 +49,7 @@ navigate(-1);
       {!editing && (
           <FaPencil
           onClick={() => {
-            setName(`${user.firstName} ${user.lastName}`);  // <-- Set name here
+            setName(`${user.firstName} ${user.lastName}`);  
             setEditing(true);
           }}
           className="float-end fs-5 mt-2 wd-edit"
