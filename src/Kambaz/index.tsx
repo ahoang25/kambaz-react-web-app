@@ -15,24 +15,22 @@ import * as userClient from "./Account/client";
 export default function Kambaz() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [courses, setCourses] = useState<any[]>([]);
-  const [enrollments] = useState<any[]>([]); 
+const [enrollments, setEnrolledCourses] = useState<any[]>([]);
   
-  
-  const fetchCourses = async () => {
-    if (!currentUser?._id) return;
-    const courses = await courseClient.fetchAllCourses();
-    setCourses(courses);
-  };
+const fetchCourses = async () => {
+  if (!currentUser?._id) return;
+  const courses = await courseClient.fetchAllCourses();
+  setCourses(courses);
+};
  
-
-  const findCoursesForUser = async () => {
-    try {
-      const courses = await userClient.findCoursesForUser(currentUser._id);
-      setCourses(courses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+const findCoursesForUser = async () => {
+  try {
+    const courses = await userClient.findCoursesForUser(currentUser._id);
+    setEnrolledCourses(courses);
+  } catch (error) {
+    console.error(error);
+  }
+};
  
 
   useEffect(() => {
@@ -100,8 +98,8 @@ export default function Kambaz() {
               element={
                 <ProtectedRoute>
                   <Dashboard
-                    courses={courses}
-                    enrollments={enrollments}
+                      courses={courses}
+                      enrollments={enrollments}
                     addNewCourse={addNewCourse}
                     updateCourse={updateCourse}
                     deleteCourse={deleteCourse}
