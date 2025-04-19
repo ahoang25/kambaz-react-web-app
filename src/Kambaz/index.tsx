@@ -28,6 +28,7 @@ export default function Kambaz() {
   const findCoursesForUser = async () => {
     try {
       const courses = await userClient.findCoursesForUser();
+      console.log("ENROLLED COURSES:", courses);
       setEnrollments(courses);
     } catch (error) {
       console.error("Failed to fetch enrolled courses", error);

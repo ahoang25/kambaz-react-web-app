@@ -40,8 +40,11 @@ export default function Assignments() {
     ? assignmentState.assignments
     : [];
 
-  const assignments = allAssignments.filter((a: { course: any; }) => a.course === cid);
-
+    const assignments = allAssignments.filter((a: any) =>
+    typeof a.course === "string"
+      ? a.course === cid
+      : a.course?._id === cid
+  );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedAssignment, setSelectedAssignment] =
     useState<Assignment | null>(null);

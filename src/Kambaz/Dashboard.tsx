@@ -85,14 +85,11 @@ export default function Dashboard({
     if (!currentUser || !currentUser._id) return [];
   
     return courses.filter((crs) =>
-      enrollments.some(
-        (enr) =>
-          enr?.user === currentUser._id &&
-          enr?.course &&
-          enr.course._id === crs._id
-      )
+      enrollments.some((enrolledCourse) => enrolledCourse._id === crs._id)
     );
   }, [courses, enrollments, currentUser]);
+  
+  
 
   const coursesToDisplay = showAllCourses ? courses : enrolledCourses;
 
@@ -169,12 +166,14 @@ export default function Dashboard({
       <Container fluid>
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
           {coursesToDisplay.map((c) => {
-            const isEnrolled =
-              typeof c.enrolled === "boolean"
-                ? c.enrolled
-                : enrollments.some(
-                  (enr) => enr.user === currentUser?._id && enr.course._id === c._id
-                );
+            const isEnrolled = enrollments.some(
+              (enr) =>
+                enr?.user?._id === currentUser._id &&
+                enr?.course?._id === c._id
+            );
+          
+            
+            
             return (
               <Col key={c._id} style={{ width: "300px" }}>
                 <Card>
